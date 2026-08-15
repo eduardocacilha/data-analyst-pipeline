@@ -1,0 +1,24 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# dbt
+dbt/nyc_taxi_analytics/target/
+dbt/nyc_taxi_analytics/dbt_packages/
+dbt/nyc_taxi_analytics/logs/
+
+# Credenciais (nunca commitar)
+.env
+profiles.yml
+*.pem
+
+# Downloads temporários do script de ingestão
+_tmp_downloads/
+
+# Notebooks - checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db

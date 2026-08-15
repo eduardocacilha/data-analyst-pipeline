@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: >
+      Camada bronze — dado cru gravado como Delta table a partir do S3 raw,
+      sem transformação de regra de negócio, apenas com metadados técnicos
+      de ingestão adicionados.
+    database: hive_metastore   # ajustar se estiver usando Unity Catalog
+    schema: bronze
+    tables:
+      - name: nyc_taxi_trips
+        description: "Corridas de táxi (Yellow Taxi), 1 linha = 1 corrida, direto do Parquet original."
+        columns:
+          - name: tpep_pickup_datetime
+            description: "Data/hora de início da corrida"
+          - name: tpep_dropoff_datetime
+            description: "Data/hora de fim da corrida"
+          - name: passenger_count
+            description: "Número de passageiros informado pelo motorista"
+          - name: trip_distance
+            description: "Distância da corrida em milhas"
+          - name: pulocationid
+            description: "ID da zona de embarque (FK para dim_zone)"
+          - name: dolocationid
+            description: "ID da zona de desembarque (FK para dim_zone)"
+          - name: payment_type
+            description: "Código do tipo de pagamento"
+          - name: total_amount
+            description: "Valor total cobrado na corrida"
