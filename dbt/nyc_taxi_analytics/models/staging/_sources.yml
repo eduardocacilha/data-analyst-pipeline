@@ -6,7 +6,7 @@ sources:
       Camada bronze — dado cru gravado como Delta table a partir do S3 raw,
       sem transformação de regra de negócio, apenas com metadados técnicos
       de ingestão adicionados.
-    database: hive_metastore   # ajustar se estiver usando Unity Catalog
+    database: workspace   # catálogo Unity Catalog do workspace (trial)
     schema: bronze
     tables:
       - name: nyc_taxi_trips
