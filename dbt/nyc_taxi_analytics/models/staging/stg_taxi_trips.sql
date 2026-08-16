@@ -48,11 +48,12 @@ renamed as (
     where tpep_pickup_datetime is not null
       and tpep_dropoff_datetime is not null
       and tpep_dropoff_datetime > tpep_pickup_datetime
-      -- remove corridas com duração implausível (ex: aquela de ~24h que identificamos na EDA).
-      -- 3 horas é um limite conservador para táxi urbano; ajuste esse valor se seu
-      -- mentor sugerir outro critério (ex: baseado em percentil, não valor fixo).
       and tpep_dropoff_datetime <= tpep_pickup_datetime + INTERVAL 3 HOURS
+      and dolocationid is not null
+      and payment_type is not null
+      and passenger_count is not null
+      and trip_distance is not null)   
 
-)
 
-select * from renamed
+
+
