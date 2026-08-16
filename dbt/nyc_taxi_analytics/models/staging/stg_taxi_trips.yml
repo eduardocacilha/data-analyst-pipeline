@@ -4,6 +4,11 @@ models:
   - name: stg_taxi_trips
     description: "Corridas de táxi limpas e padronizadas (camada silver)."
     columns:
+      - name: trip_id
+        description: "Surrogate key gerada a partir de vendor_id + pickup_at + dropoff_at + pickup/dropoff_location_id, já que o dataset original não tem ID de corrida nativo."
+        tests:
+          - not_null
+          - unique
       - name: pickup_location_id
         description: "FK para a zona de embarque"
         tests:

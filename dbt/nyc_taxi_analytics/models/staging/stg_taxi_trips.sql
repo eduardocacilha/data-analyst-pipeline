@@ -1,5 +1,9 @@
 -- Camada silver: limpeza e padronização da bronze, sem regra de negócio pesada.
 -- Grão: 1 linha = 1 corrida.
+--
+-- Observação importante: o dataset da NYC TLC NÃO tem um ID de corrida nativo.
+-- Por isso geramos uma surrogate key (trip_id) a partir da combinação de colunas
+-- que, juntas, tornam a linha praticamente única (vendor + timestamps + zonas).
 
 with source as (
 
@@ -10,7 +14,17 @@ with source as (
 renamed as (
 
     select
+        -- chave substituta (surrogate key) - o dataset não tem ID de corrida nativo
+        {{ dbt_utils.generate_surrogate_key([
+            'vendorid',
+            'tpep_pickup_datetime',
+            'tpep_dropoff_datetime',
+            'pulocationid',
+            'dolocationid'
+        ]) }} as trip_id,
+
         -- chaves / dimensões
+        vendorid                    as vendor_id,
         pulocationid                as pickup_location_id,
         dolocationid                as dropoff_location_id,
         payment_type                as payment_type_id,
@@ -33,7 +47,11 @@ renamed as (
     from source
     where tpep_pickup_datetime is not null
       and tpep_dropoff_datetime is not null
-      and tpep_dropoff_datetime > tpep_pickup_datetime   -- remove registros inconsistentes
+      and tpep_dropoff_datetime > tpep_pickup_datetime
+      -- remove corridas com duração implausível (ex: aquela de ~24h que identificamos na EDA).
+      -- 3 horas é um limite conservador para táxi urbano; ajuste esse valor se seu
+      -- mentor sugerir outro critério (ex: baseado em percentil, não valor fixo).
+      and tpep_dropoff_datetime <= tpep_pickup_datetime + INTERVAL 3 HOURS
 
 )
 
