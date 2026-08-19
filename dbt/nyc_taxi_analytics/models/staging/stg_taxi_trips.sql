@@ -54,6 +54,8 @@ renamed as (
       and passenger_count is not null
       and trip_distance is not null)   
 
+      select * from renamed;
+
 
 
 
