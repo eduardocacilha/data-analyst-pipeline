@@ -2,25 +2,60 @@ version: 2
 
 models:
   - name: stg_taxi_trips
-    description: "Corridas de táxi limpas e padronizadas (camada silver)."
+    description: "Corridas de táxi limpas, padronizadas e deduplicadas (camada silver). Grão: 1 linha = 1 corrida."
     columns:
       - name: trip_id
-        description: "Surrogate key gerada a partir de vendor_id + pickup_at + dropoff_at + pickup/dropoff_location_id, já que o dataset original não tem ID de corrida nativo."
+        description: "Surrogate key gerada a partir de vendor_id + pickup_at + dropoff_at + pickup/dropoff_location_id, já que o dataset original não tem ID de corrida nativo. Usada também como chave de deduplicação (mantém o registro com _ingested_at mais recente)."
         tests:
           - not_null
           - unique
+      - name: vendor_id
+        description: "Código da empresa fornecedora do sistema de táxi (TPEP provider) que registrou a corrida — não é o motorista nem a empresa de táxi em si."
       - name: pickup_location_id
-        description: "FK para a zona de embarque"
+        description: "FK para a zona de embarque (taxi_zone_lookup)."
         tests:
           - not_null
       - name: dropoff_location_id
-        description: "FK para a zona de desembarque"
+        description: "FK para a zona de desembarque (taxi_zone_lookup)."
         tests:
           - not_null
+      - name: payment_type_id
+        description: "Código do tipo de pagamento: 1 = cartão de crédito, 2 = dinheiro, 3 = sem cobrança, 4 = disputa, 5 = desconhecido, 6 = corrida anulada."
+      - name: rate_code_id
+        description: "Código da tarifa final aplicada: 1 = padrão, 2 = JFK, 3 = Newark, 4 = Nassau/Westchester, 5 = negociada, 6 = corrida em grupo."
+      - name: store_and_fwd_flag
+        description: "Y/N — indica se o registro ficou guardado na memória do veículo antes de ser enviado ao servidor da TLC (por falta de conexão no momento da corrida). Sinal de qualidade/latência do dado, não é regra de negócio."
       - name: pickup_at
+        description: "Data/hora em que o taxímetro foi ligado (início da corrida)."
         tests:
           - not_null
+      - name: dropoff_at
+        description: "Data/hora em que o taxímetro foi desligado (fim da corrida)."
+        tests:
+          - not_null
+      - name: passenger_count
+        description: "Número de passageiros informado manualmente pelo motorista. Corridas com mais de 4 passageiros são mantidas sem filtro — em análise, ver se correlacionam com rate_code_id = 6 (corrida em grupo)."
+      - name: trip_distance_miles
+        description: "Distância da corrida em milhas, medida pelo taxímetro."
+      - name: fare_amount
+        description: "Tarifa base calculada pelo taxímetro (tempo + distância)."
+      - name: extra_amount
+        description: "Sobretaxas diversas (ex: horário de pico, período noturno)."
+      - name: mta_tax_amount
+        description: "Taxa fixa da MTA, geralmente $0.50."
+      - name: tip_amount
+        description: "Gorjeta — só preenchida automaticamente quando o pagamento é cartão; gorjeta em dinheiro não entra aqui."
+      - name: tolls_amount
+        description: "Valor de pedágios pagos na corrida."
+      - name: improvement_surcharge_amount
+        description: "Sobretaxa fixa de melhoria, geralmente $0.30."
+      - name: congestion_surcharge_amount
+        description: "Sobretaxa de congestionamento (áreas específicas de Manhattan)."
       - name: total_amount
-        description: "Valor total cobrado"
+        description: "Valor total cobrado ao passageiro (não inclui gorjeta em dinheiro)."
         tests:
           - not_null
+      - name: _ingested_at
+        description: "Coluna técnica — adicionada no notebook de ingestão bronze, marca quando o dado foi processado. Usada como critério de desempate na deduplicação."
+      - name: _source_file
+        description: "Coluna técnica — adicionada no notebook de ingestão bronze, indica de qual arquivo Parquet a linha veio."

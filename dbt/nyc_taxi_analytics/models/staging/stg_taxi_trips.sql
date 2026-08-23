@@ -4,6 +4,10 @@
 -- Observação importante: o dataset da NYC TLC NÃO tem um ID de corrida nativo.
 -- Por isso geramos uma surrogate key (trip_id) a partir da combinação de colunas
 -- que, juntas, tornam a linha praticamente única (vendor + timestamps + zonas).
+--
+-- Deduplicação: a bronze pode conter linhas duplicadas (ex: reprocessamento de
+-- ingestão). Mantemos apenas o registro mais recente por trip_id (_ingested_at
+-- mais alto), via ROW_NUMBER() + QUALIFY.
 
 with source as (
 
@@ -28,16 +32,25 @@ renamed as (
         pulocationid                as pickup_location_id,
         dolocationid                as dropoff_location_id,
         payment_type                as payment_type_id,
+        ratecodeid                  as rate_code_id,
+        store_and_fwd_flag          as store_and_fwd_flag,
 
         -- tempo
         tpep_pickup_datetime        as pickup_at,
         tpep_dropoff_datetime       as dropoff_at,
 
         -- métricas
-        passenger_count             as passenger_count,
+        passenger_count              as passenger_count,
         trip_distance                as trip_distance_miles,
+
+        -- financeiro
         fare_amount                  as fare_amount,
+        extra                        as extra_amount,
+        mta_tax                      as mta_tax_amount,
         tip_amount                   as tip_amount,
+        tolls_amount                 as tolls_amount,
+        improvement_surcharge        as improvement_surcharge_amount,
+        congestion_surcharge         as congestion_surcharge_amount,
         total_amount                 as total_amount,
 
         -- metadados técnicos (vindos da bronze)
@@ -52,10 +65,19 @@ renamed as (
       and dolocationid is not null
       and payment_type is not null
       and passenger_count is not null
-      and trip_distance is not null)   
+      and trip_distance is not null
 
-      select * from renamed;
+),
 
+deduplicated as (
 
+    select *
+    from renamed
+    qualify row_number() over (
+        partition by trip_id
+        order by _ingested_at desc
+    ) = 1
 
+)
 
+select * from deduplicated
