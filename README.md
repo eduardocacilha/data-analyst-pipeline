@@ -1,7 +1,7 @@
 # Data Pipeline — NYC Taxi Analytics (Medallion Architecture)
 
 Projeto de portfólio para desenvolvimento em **Analytics Engineering**, construído ao
-longo de 8 semanas de mentoria. O objetivo é dominar, na prática, o ciclo completo de
+longo de um roadmap pessoal de 8 semanas. O objetivo é dominar, na prática, o ciclo completo de
 um pipeline analítico moderno: ingestão, transformação em camadas (medalhão), testes
 de qualidade, orquestração e consumo em BI.
 
@@ -75,4 +75,4 @@ Acompanhe o progresso semana a semana em [`docs/roadmap.md`](docs/roadmap.md).
 - [ ] Semana 5 — Camada gold (marts) + modelagem dimensional
 - [ ] Semana 6 — Documentação + orquestração (Jobs)
 - [ ] Semana 7 — Power BI + RLS
-- [ ] Semana 8 — Polimento, case de portfólio, apresentação ao mentor
+- [ ] Semana 8 — Polimento, case de portfólio, apresentação final

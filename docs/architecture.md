@@ -55,7 +55,7 @@ bronze/silver.
 5. Power BI conecta via Databricks SQL Warehouse direto na camada gold,
    com RLS aplicando filtro por usuário/role.
 
-## Decisões em aberto (para validar com o mentor)
+## Decisões em aberto
 
 - **Databricks Community Edition vs trial de 14 dias**: a Community Edition é
   gratuita "para sempre", mas tem restrições para acessar storage externo
@@ -63,7 +63,7 @@ bronze/silver.
   notebook para buscar os dados, em vez de montar o S3 nativamente. O trial
   de 14 dias em uma conta AWS/Azure real permite configurar Unity Catalog e
   external locations, mais próximo do que se vê em produção. Vale decidir
-  com o mentor qual caminho seguir dado o tempo do projeto.
+  qual caminho seguir dado o tempo do projeto.
 - **RLS estático vs dinâmico** no Power BI (Semana 7).
 - **Orquestração**: usar Databricks Workflows (mais simples, nativo) ou
   introduzir uma ferramenta externa (Airflow) — para este projeto, Databricks
