@@ -22,3 +22,8 @@ _tmp_downloads/
 # OS
 .DS_Store
 Thumbs.db
+
+# Anotações pessoais / aprendizado (mantidas localmente, fora do repo público)
+aprendizados.md
+docs/roadmap.md
+docs/setup-guide.md
