@@ -32,7 +32,7 @@ renamed as (
         pulocationid                as pickup_location_id,
         dolocationid                as dropoff_location_id,
         payment_type                as payment_type_id,
-        ratecodeid                  as rate_code_id,
+        cast(ratecodeid as int)                  as rate_code_id,
         store_and_fwd_flag          as store_and_fwd_flag,
 
         -- tempo
@@ -40,7 +40,7 @@ renamed as (
         tpep_dropoff_datetime       as dropoff_at,
 
         -- métricas
-        passenger_count              as passenger_count,
+        cast(passenger_count as int)              as passenger_count,
         trip_distance                as trip_distance_miles,
 
         -- financeiro
