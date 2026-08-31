@@ -64,15 +64,4 @@ data-pipeline/
         └── seeds/              # dados de referência estáticos (ex: zonas)
 ```
 
-## Status do projeto
 
-Acompanhe o progresso semana a semana em [`docs/roadmap.md`](docs/roadmap.md).
-
-- [ ] Semana 1 — Setup de contas + ingestão bronze
-- [ ] Semana 2 — Exploração e camada bronze no Databricks
-- [ ] Semana 3 — dbt conectado ao Databricks
-- [ ] Semana 4 — Camada silver (staging)
-- [ ] Semana 5 — Camada gold (marts) + modelagem dimensional
-- [ ] Semana 6 — Documentação + orquestração (Jobs)
-- [ ] Semana 7 — Power BI + RLS
-- [ ] Semana 8 — Polimento, case de portfólio, apresentação final
